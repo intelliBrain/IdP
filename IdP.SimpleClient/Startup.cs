@@ -23,9 +23,9 @@ namespace IdP.SimpleClient
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
+                //// This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                //options.CheckConsentNeeded = context => true;
+                //options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
 
@@ -45,8 +45,8 @@ namespace IdP.SimpleClient
                 options.SignInScheme = "Cookies";
                 options.Authority = "http://localhost:5000";
                 options.RequireHttpsMetadata = false;
-                options.ClientId = "mv10blog.client";
-                options.ClientSecret = "the_secret";
+                options.ClientId = "IdP.SimpleClient.Id";
+                options.ClientSecret = "THIS_IS_THE_CLIENT_SECRET";
                 options.ResponseType = "code id_token";
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
@@ -74,7 +74,9 @@ namespace IdP.SimpleClient
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseAuthentication();
+
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 

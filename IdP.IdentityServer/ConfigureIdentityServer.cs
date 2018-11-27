@@ -17,9 +17,9 @@ namespace IdP.IdentityServer
                 new IdentityResources.Address(),
 
                 new IdentityResource(
-                    name: "mv10blog.identity",
-                    displayName: "MV10 Blog User Profile",
-                    claimTypes: new[] { "mv10_accounttype" })
+                    name: "IdP.IdentityServer.Identity",
+                    displayName: "IdP.IdentityServer User Profile",
+                    claimTypes: new[] { "IB_IdP_AccountType" })
             };
         }
 
@@ -29,11 +29,11 @@ namespace IdP.IdentityServer
             {
                 new Client
                 {
-                    ClientId = "mv10blog.client",
-                    ClientName = "McGuireV10.com",
+                    ClientId = "IdP.SimpleClient.Id",
+                    ClientName = "IdP.SimpleClient",
                     ClientUri = "http://localhost:5002",
                     AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
-                    ClientSecrets = {new Secret("the_secret".Sha256())},
+                    ClientSecrets = {new Secret("THIS_IS_THE_CLIENT_SECRET".Sha256())},
                     AllowRememberConsent = true,
                     AllowOfflineAccess = true,
                     RedirectUris = { "http://localhost:5002/signin-oidc"}, // after login
@@ -45,7 +45,7 @@ namespace IdP.IdentityServer
                         IdentityServerConstants.StandardScopes.Email,
                         IdentityServerConstants.StandardScopes.Phone,
                         IdentityServerConstants.StandardScopes.Address,
-                        "mv10blog.identity"
+                        "IdP.IdentityServer.Identity"
                     }
                 }
             };
