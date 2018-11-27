@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[AppUser] (
+﻿CREATE TABLE [dbo].[AppUsers] (
     [id]                  INT                IDENTITY (1, 1) NOT NULL,
     [SubjectId]           NVARCHAR (MAX)     NOT NULL,
     [Username]            NVARCHAR (MAX)     NOT NULL,
@@ -9,7 +9,7 @@
     PRIMARY KEY CLUSTERED ([id] ASC)
 );
 
-CREATE TABLE [dbo].[Claim] (
+CREATE TABLE [dbo].[Claims] (
     [id]             INT            IDENTITY (1, 1) NOT NULL,
     [AppUser_id]     INT            NOT NULL,
     [Issuer]         NVARCHAR (MAX) DEFAULT ('') NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE [dbo].[Claim] (
     PRIMARY KEY CLUSTERED ([id] ASC)
 );
 
-CREATE TABLE [dbo].[Grant] (
+CREATE TABLE [dbo].[Grants] (
     [id]           INT            IDENTITY (1, 1) NOT NULL,
     [Key]          NVARCHAR (200) NOT NULL,
     [ClientId]     NVARCHAR (200) NOT NULL,

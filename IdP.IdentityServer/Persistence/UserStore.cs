@@ -29,7 +29,7 @@ public class UserStore : IUserStore
         {
             await conn.OpenAsync();
             var table = new DataTable();
-            using (var cmd = new SqlCommand("SELECT [PasswordSalt], [PasswordHash] FROM [AppUser] WHERE [Username] = @username;", conn))
+            using (var cmd = new SqlCommand("SELECT [PasswordSalt], [PasswordHash] FROM [AppUsers] WHERE [Username] = @username;", conn))
             {
                 cmd.Parameters.Add(new SqlParameter("@username", username));
                 var reader = await cmd.ExecuteReaderAsync();
@@ -48,7 +48,7 @@ public class UserStore : IUserStore
     public async Task<AppUser> FindBySubjectId(string subjectId)
     {
         AppUser user = null;
-        using (var cmd = new SqlCommand("SELECT * FROM [AppUser] WHERE [SubjectId] = @subjectid;"))
+        using (var cmd = new SqlCommand("SELECT * FROM [AppUsers] WHERE [SubjectId] = @subjectid;"))
         {
             cmd.Parameters.Add(new SqlParameter("@subjectid", subjectId));
             user = await ExecuteFindCommand(cmd);
@@ -59,7 +59,7 @@ public class UserStore : IUserStore
     public async Task<AppUser> FindByUsername(string username)
     {
         AppUser user = null;
-        using (var cmd = new SqlCommand("SELECT * FROM [AppUser] WHERE [Username] = @username;"))
+        using (var cmd = new SqlCommand("SELECT * FROM [AppUsers] WHERE [Username] = @username;"))
         {
             cmd.Parameters.Add(new SqlParameter("@username", username));
             user = await ExecuteFindCommand(cmd);
@@ -70,7 +70,7 @@ public class UserStore : IUserStore
     public async Task<AppUser> FindByExternalProvider(string provider, string subjectId)
     {
         AppUser user = null;
-        using (var cmd = new SqlCommand("SELECT * FROM [AppUser] WHERE [ProviderName] = @pname AND [ProviderSubjectId] = @psub;"))
+        using (var cmd = new SqlCommand("SELECT * FROM [AppUsers] WHERE [ProviderName] = @pname AND [ProviderSubjectId] = @psub;"))
         {
             cmd.Parameters.Add(new SqlParameter("@pname", provider));
             cmd.Parameters.Add(new SqlParameter("@psub", subjectId));
@@ -157,7 +157,7 @@ public class UserStore : IUserStore
             {
                 await conn.OpenAsync();
                 var upsert =
-                    $"MERGE [AppUser] WITH (ROWLOCK) AS [T] " +
+                    $"MERGE [AppUsers] WITH (ROWLOCK) AS [T] " +
                     $"USING (SELECT {user.id} AS [id]) AS [S] " +
                     $"ON [T].[id] = [S].[id] " +
                     $"WHEN MATCHED THEN UPDATE SET [SubjectId]='{user.SubjectId}', [Username]='{user.Username}', [PasswordHash]='{user.PasswordHash}', [PasswordSalt]='{user.PasswordSalt}', [ProviderName]='{user.ProviderName}', [ProviderSubjectId]='{user.ProviderSubjectId}' " +
@@ -180,7 +180,7 @@ public class UserStore : IUserStore
                     foreach (var c in user.Claims)
                     {
                         var insertIfNew =
-                            $"MERGE [Claim] AS [T] " +
+                            $"MERGE [Claims] AS [T] " +
                             $"USING (SELECT {user.id} AS [uid], '{c.Subject}' AS [sub], '{c.Type}' AS [type], '{c.Value}' as [val]) AS [S] " +
                             $"ON [T].[AppUser_id]=[S].[uid] AND [T].[Subject]=[S].[sub] AND [T].[Type]=[S].[type] AND [T].[Value]=[S].[val] " +
                             $"WHEN NOT MATCHED THEN INSERT ([AppUser_id],[Issuer],[OriginalIssuer],[Subject],[Type],[Value],[ValueType]) " +
@@ -224,7 +224,7 @@ public class UserStore : IUserStore
                     ProviderName = (string)userRow["ProviderName"],
                     ProviderSubjectId = (string)userRow["ProviderSubjectId"],
                 };
-                using (var claimcmd = new SqlCommand("SELECT * FROM [Claim] WHERE [AppUser_id] = @uid;", conn))
+                using (var claimcmd = new SqlCommand("SELECT * FROM [Claims] WHERE [AppUser_id] = @uid;", conn))
                 {
                     claimcmd.Parameters.Add(new SqlParameter("@uid", user.id));
                     reader = await claimcmd.ExecuteReaderAsync();

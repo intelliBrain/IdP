@@ -24,7 +24,7 @@ public class PersistedGrantStore : IPersistedGrantStore
         using (var conn = new SqlConnection(connectionString))
         {
             await conn.OpenAsync();
-            using (var cmd = new SqlCommand("SELECT * FROM [Grant] WHERE [SubjectId] = @sub;", conn))
+            using (var cmd = new SqlCommand("SELECT * FROM [Grants] WHERE [SubjectId] = @sub;", conn))
             {
                 cmd.Parameters.Add(new SqlParameter("@sub", subjectId));
                 var reader = await cmd.ExecuteReaderAsync();
@@ -49,7 +49,7 @@ public class PersistedGrantStore : IPersistedGrantStore
         using (var conn = new SqlConnection(connectionString))
         {
             await conn.OpenAsync();
-            using (var cmd = new SqlCommand("SELECT * FROM [Grant] WHERE [Key] = @key", conn))
+            using (var cmd = new SqlCommand("SELECT * FROM [Grants] WHERE [Key] = @key", conn))
             {
                 cmd.Parameters.Add(new SqlParameter("@key", key));
                 var reader = await cmd.ExecuteReaderAsync();
@@ -70,7 +70,7 @@ public class PersistedGrantStore : IPersistedGrantStore
         using (var conn = new SqlConnection(connectionString))
         {
             await conn.OpenAsync();
-            using (var cmd = new SqlCommand("DELETE FROM [Grant] WHERE [SubjectId] = @sub AND [ClientId] = @client", conn))
+            using (var cmd = new SqlCommand("DELETE FROM [Grants] WHERE [SubjectId] = @sub AND [ClientId] = @client", conn))
             {
                 cmd.Parameters.Add(new SqlParameter("@sub", subjectId));
                 cmd.Parameters.Add(new SqlParameter("@client", clientId));
@@ -84,7 +84,7 @@ public class PersistedGrantStore : IPersistedGrantStore
         using (var conn = new SqlConnection(connectionString))
         {
             await conn.OpenAsync();
-            using (var cmd = new SqlCommand("DELETE FROM [Grant] WHERE [SubjectId] = @sub AND [ClientId] = @client AND [Type] = @type", conn))
+            using (var cmd = new SqlCommand("DELETE FROM [Grants] WHERE [SubjectId] = @sub AND [ClientId] = @client AND [Type] = @type", conn))
             {
                 cmd.Parameters.Add(new SqlParameter("@sub", subjectId));
                 cmd.Parameters.Add(new SqlParameter("@client", clientId));
@@ -99,7 +99,7 @@ public class PersistedGrantStore : IPersistedGrantStore
         using (var conn = new SqlConnection(connectionString))
         {
             await conn.OpenAsync();
-            using (var cmd = new SqlCommand("DELETE FROM [Grant] WHERE [Key] = @key", conn))
+            using (var cmd = new SqlCommand("DELETE FROM [Grants] WHERE [Key] = @key", conn))
             {
                 cmd.Parameters.Add(new SqlParameter("@key", key));
                 await cmd.ExecuteNonQueryAsync();
@@ -113,7 +113,7 @@ public class PersistedGrantStore : IPersistedGrantStore
         {
             await conn.OpenAsync();
             var upsert =
-                $"MERGE [Grant] WITH (ROWLOCK) AS [T] " +
+                $"MERGE [Grants] WITH (ROWLOCK) AS [T] " +
                 $"USING (SELECT '{grant.Key}' AS [Key]) AS [S] " +
                 $"ON [T].[Key] = [S].[Key] " +
                 $"WHEN MATCHED THEN UPDATE SET [ClientId]='{grant.ClientId}', [CreationTime]='{FormatDate(grant.CreationTime)}', [Data]='{grant.Data}', [Expiration]={NullOrDate(grant.Expiration)}, [SubjectId]='{grant.SubjectId}', [Type]='{grant.Type}' " +
