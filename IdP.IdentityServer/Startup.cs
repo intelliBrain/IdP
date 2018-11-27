@@ -53,6 +53,7 @@ namespace IdP.IdentityServer
 
             app.UseIdentityServer(); // includes a call to UseAuthentication
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
         }

@@ -76,7 +76,7 @@ namespace IdP.SimpleClient
 
             app.UseAuthentication();
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
